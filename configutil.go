@@ -12,11 +12,13 @@ import (
 )
 
 type Config struct {
-	DatabaseURL    string
-	AuthServiceURL string
-	Debug          bool
-	Port           string
-	EnvFile        string
+	DatabaseURL        string
+	AuthServiceURL     string
+	Debug              bool
+	Port               string
+	EnvFile            string
+	GoogleClientID     string
+	GoogleClientSecret string
 }
 
 type Option func(*Config)
@@ -59,6 +61,22 @@ func WithEnvFile(file string) Option {
 	}
 }
 
+func WithGoogleClientID(clientID string) Option {
+	return func(c *Config) {
+		if clientID != "" {
+			c.GoogleClientID = clientID
+		}
+	}
+}
+
+func WithGoogleClientSecret(clientSecret string) Option {
+	return func(c *Config) {
+		if clientSecret != "" {
+			c.GoogleClientSecret = clientSecret
+		}
+	}
+}
+
 func NewConfig(opts ...Option) (*Config, error) {
 	c := &Config{}
 
@@ -75,6 +93,8 @@ func NewConfig(opts ...Option) (*Config, error) {
 	c.AuthServiceURL = getEnvWithFallback(envs, "AUTH_SERVICE_URL", c.AuthServiceURL)
 	c.Debug = getBoolEnvWithFallback(envs, "DEBUG", c.Debug)
 	c.Port = getEnvWithFallback(envs, "PORT", c.Port)
+	c.GoogleClientID = getEnvWithFallback(envs, "GOOGLE_CLIENT_ID", c.GoogleClientID)
+	c.GoogleClientSecret = getEnvWithFallback(envs, "GOOGLE_CLIENT_SECRET", c.GoogleClientSecret)
 
 	if err := c.validate(); err != nil {
 		return nil, err
