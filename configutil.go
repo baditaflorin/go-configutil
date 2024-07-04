@@ -23,6 +23,19 @@ type Config struct {
 
 type Option func(*Config)
 
+func LoadConfig(opts ...Option) (*Config, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get current working directory: %w", err)
+	}
+
+	envFilePath := FindEnvFilePath(wd)
+
+	opts = append(opts, WithEnvFile(envFilePath))
+
+	return NewConfig(opts...)
+}
+
 func WithDatabaseURL(url string) Option {
 	return func(c *Config) {
 		if url != "" {
