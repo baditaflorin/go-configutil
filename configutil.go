@@ -139,7 +139,7 @@ func loadEnv(envFile string) (map[string]string, error) {
 		if envFile == "" {
 			_, b, _, _ := runtime.Caller(0)
 			basepath := filepath.Dir(b)
-			envFile = findEnvFilePath(basepath)
+			envFile = FindEnvFilePath(basepath)
 		}
 	}
 
@@ -154,8 +154,8 @@ func loadEnv(envFile string) (map[string]string, error) {
 	return envs, nil
 }
 
-// findEnvFilePath recursively searches for the .env file in parent directories
-func findEnvFilePath(startDir string) string {
+// FindEnvFilePath recursively searches for the .env file in parent directories
+func FindEnvFilePath(startDir string) string {
 	dir := startDir
 	for {
 		envFilePath := filepath.Join(dir, ".env")
